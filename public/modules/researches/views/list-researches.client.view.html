@@ -1,0 +1,29 @@
+<section data-ng-controller="ResearchesController" data-ng-init="find()">
+	<div class="page-header">
+		<h1>Researches</h1>
+	</div>
+	<div class="list-group">
+		<a data-ng-repeat="research in researches" data-ng-href="#!/researches/{{research._id}}" class="list-group-item">
+			<small class="list-group-item-text">
+				Posted on
+				<span data-ng-bind="research.created | date:'mediumDate'"></span>
+				by
+				<span data-ng-bind="research.user.displayName"></span>
+				for a <span data-ng-bind="research.duration"></span> weeks duration
+			</small>
+			<h4 class="list-group-item-heading" data-ng-bind="research.name"></h4>
+			<p class="list-group-item-text" data-ng-bind="research.words"></p>
+			<p class="list-group-item-text" data-ng-bind="research.size"></p>
+			<p class="list-group-item-text" data-ng-bind="research.positive_emotion"></p>
+			<p class="list-group-item-text" data-ng-bind="research.negative_emotion"></p>
+			<p class="list-group-item-text" data-ng-bind="research"></p>
+
+			<div data-ng-repeat="tweet in research.tweet" class="list-group-item">
+				<p class="list-group-item-text" data-ng-bind="tweet.text"></p>
+			</div>
+		</a>
+	</div>
+	<div class="alert alert-warning text-center" data-ng-if="researches.$resolved && !researches.length">
+		No researches yet, why don't you <a href="/#!/researches/create">create one</a>?
+	</div>
+</section>
