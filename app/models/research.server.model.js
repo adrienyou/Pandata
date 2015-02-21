@@ -10,6 +10,14 @@ var mongoose = require('mongoose'),
  * Research Schema
  */
 var ResearchSchema = new Schema({
+	python_id: {
+		type: Number,
+		default: 0
+	},
+	user: {
+		type: Schema.ObjectId,
+		ref: 'User'
+	},
 	title: {
 		type: String,
 		default: '',
@@ -60,10 +68,6 @@ var ResearchSchema = new Schema({
 	tweets: {
 		type: Array,
 		default: []
-	},
-	user: {
-		type: Schema.ObjectId,
-		ref: 'User'
 	}
 });
 

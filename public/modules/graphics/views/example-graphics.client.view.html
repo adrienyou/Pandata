@@ -1,0 +1,65 @@
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<section ng-controller="GraphicsController" ng-init="charts=[[8, 3, 7],[2, 5, 9],[6, 2, 3],[2, 2, 5]]">
+	<div class="well">
+		<h2 class="text-center">Dashboard example</h2>
+	</div>	 
+
+	<div class="row">
+		<!-- Panel for charts selection -->
+		<div class="col-md-6">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					Selection of boards
+				</div>
+				<div class="panel-body">
+					<table class="table table-striped">            
+						<thead>                
+							<tr>                    
+								<th>Graphic Name</th>                    
+								<th>Show</th>                
+							</tr>            
+						</thead>            
+						<tbody>                
+			     			<tr ng-repeat="graph in todo.graphs | orderBy: 'graphName'">
+			                    <td>{{graph.graphName}}</td>
+			                    <td><input type="checkbox" ng-model="graph.show" /></td>
+			                    <td>{{graph.show}}</td> 
+			               </tr>            
+						</tbody>        
+					</table> 
+				</div>	
+			</div>
+		</div>
+
+		<!-- Panel for basics info about the research -->
+		<div class="col-md-6">
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					Selection of boards
+				</div>
+				<div class="panel-body">
+					Pie charts
+					Bar charts
+					Timeline
+					ect...
+				</div>	
+			</div>
+		</div>
+	</div>
+
+	<div ng-hide="isPieChart() == true">
+		<div class="col-md-6">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					Motherfucking Pie Chart
+				</div>
+				<div class="panel-body">
+					Pie Chart Biiiitch !!
+				</div>	
+			</div>
+		</div>
+	</div>
+
+	<donut-chart data="chart" ng-repeat="chart in charts"></donut-chart> 
+</section>
