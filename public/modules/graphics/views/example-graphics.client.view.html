@@ -1,6 +1,6 @@
 <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
-<section ng-controller="GraphicsController" ng-init="charts=[[8, 3, 7],[2, 5, 9],[6, 2, 3],[2, 2, 5]]">
+<section ng-controller="GraphicsController">
 	<div class="well">
 		<h2 class="text-center">Dashboard example</h2>
 	</div>	 
@@ -47,19 +47,22 @@
 			</div>
 		</div>
 	</div>
+	<div class="row">
+		<!-- piedata = [{{positive_emotion}}, {{negative_emotion}}, {{neutral_emotion}}] -->
+		<div ng-hide="isPieChart() == true">
+			<div class="col-md-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						Motherfucking Pie Chart
 
-	<div ng-hide="isPieChart() == true">
-		<div class="col-md-6">
-			<div class="panel panel-primary">
-				<div class="panel-heading">
-					Motherfucking Pie Chart
+					</div>
+					<div class="panel-body">
+						<donut-chart data="todo.piedata"></donut-chart>
+						<p id="pielegend"></p>
+					</div>	
 				</div>
-				<div class="panel-body">
-					Pie Chart Biiiitch !!
-				</div>	
 			</div>
 		</div>
 	</div>
 
-	<donut-chart data="chart" ng-repeat="chart in charts"></donut-chart> 
 </section>
