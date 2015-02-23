@@ -1,8 +1,15 @@
 'use strict';
 
-var model = {        
-  graphs: [{ graphName: 'Pie Chart', show: false, id: 0 }, 
-      { graphName: 'Bar Chart', show: false, id: 1 },
+var model = { 
+  research: { user : 'Adrien You',
+              title : 'Research about CentraleSupelec',
+              description : 'Research about the schools Ecole Centrale Paris and Supelec, that are now creating CentraleSupelec',
+              duration : '4',
+              created : '2015-01-13T12:07:24.852Z',
+              words : ['Ecole Centrale Paris', 'Supelec', 'CentraleSupelec'],
+              size : 12336},       
+  graphs: [{ graphName: 'Pie Chart', show: true, id: 0 }, 
+      { graphName: 'Bubble Chart', show: false, id: 1 },
       { graphName: 'Timeline', show: false, id: 2 },
       { graphName: 'Something', show: false, id: 3 }],
   piedata: [{label: 'Positive emotion', value: 25},
@@ -14,19 +21,27 @@ var model = {
 angular.module('graphics')
 
 .controller('GraphicsController', function($scope) {
-  $scope.todo = model;
+  $scope.model = model;
 
   $scope.isPieChart = function() {
     var value = false;
-    angular.forEach($scope.todo.graphs, function(graph){
+    angular.forEach($scope.model.graphs, function(graph){
       if(graph.id === 0 && !graph.show) { value = true; }
+    });
+    return value;
+  };
+
+  $scope.isBubbleChart = function() {
+    var value = false;
+    angular.forEach($scope.model.graphs, function(graph){
+      if(graph.id === 1 && !graph.show) { value = true; }
     });
     return value;
   };
 
 })
 
-.directive('donutChart', function(){ 
+.directive('pieChart', function(){ 
 	function link(scope, element, attr){
 		//Default settings
     var color = d3.scale.category10();
@@ -64,7 +79,7 @@ angular.module('graphics')
       .attr('dy', '.35em')
       .style('text-anchor', 'middle')
       .text('Value')
-      .attr('y', -10);;
+      .attr('y', -10);
 
     //Graphic and legend settings
     var g = svg.append('g')
@@ -79,7 +94,7 @@ angular.module('graphics')
             .on('mouseover', function(d) {
                 d3.select(this).select('path').transition()
                     .duration(200)
-                    .attr('d', arcOver)
+                    .attr('d', arcOver);
 
                 legendTop.text(d3.select(this).datum().data.label + ': ');
                 legendBot.text(d3.select(this).datum().data.value.toFixed(2));
@@ -98,6 +113,27 @@ angular.module('graphics')
         .style('stroke', 'white')
         .attr('d', arc)
         .attr('fill', function(d, i){ return color(i); });
+
+    }
+      return {
+        link: link,
+        restrict: 'E',
+        scope: { data: '=' }
+      };
+    })
+
+.directive('bubbleChart', function(){ 
+  function link(scope, element, attr){
+    //Default settings
+    var color = d3.scale.category10();
+    var data = scope.data;
+    var width = 300;
+    var height = 300;
+    var min = Math.min(width, height);
+    
+    //Graphic init
+    var svg = d3.select(element[0]).append('svg')
+      .attr({width: width, height: height});    
 
     }
       return {

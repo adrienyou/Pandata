@@ -5,12 +5,28 @@
 		<h2 class="text-center">Dashboard example</h2>
 	</div>	 
 
+	<!-- First row, for research description and charts selection -->
 	<div class="row">
+		<!-- Panel for basics info about the research -->
+		<div class="col-md-6">
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<b class="headingB">{{model.research.title}} by {{model.research.user}}</b>
+				</div>
+				<div class="panel-body">
+					<b class="headingD">Research description:</b> {{model.research.description}}.<br/><br/>
+					<b class="headingD">Research duration:</b> {{model.research.duration}} weeks.<br/><br/>
+					<b class="headingD">Research size:</b> This research has {{model.research.size}} tweets.<br/><br/>
+					<b class="headingD">Words used for this research:</b> <span ng-repeat="word in model.research.words">{{word}} </span><br/><br/>
+					<b class="headingD">Social medias tracked: </b> <span>Twitter</span><br/><br/>
+				</div>	
+			</div>
+		</div>			
 		<!-- Panel for charts selection -->
 		<div class="col-md-6">
 			<div class="panel panel-info">
 				<div class="panel-heading">
-					Selection of boards
+					<b class="headingB">Selection of boards</b>
 				</div>
 				<div class="panel-body">
 					<table class="table table-striped">            
@@ -21,7 +37,7 @@
 							</tr>            
 						</thead>            
 						<tbody>                
-			     			<tr ng-repeat="graph in todo.graphs | orderBy: 'graphName'">
+			     			<tr ng-repeat="graph in model.graphs">
 			                    <td>{{graph.graphName}}</td>
 			                    <td><input type="checkbox" ng-model="graph.show" /></td>
 			                    <td>{{graph.show}}</td> 
@@ -32,33 +48,36 @@
 			</div>
 		</div>
 
-		<!-- Panel for basics info about the research -->
-		<div class="col-md-6">
-			<div class="panel panel-success">
-				<div class="panel-heading">
-					Selection of boards
-				</div>
-				<div class="panel-body">
-					Pie charts
-					Bar charts
-					Timeline
-					ect...
-				</div>	
-			</div>
-		</div>
 	</div>
+
 	<div class="row">
-		<!-- piedata = [{{positive_emotion}}, {{negative_emotion}}, {{neutral_emotion}}] -->
+		<!-- Pie Chart -->
 		<div ng-hide="isPieChart() == true">
 			<div class="col-md-6">
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						Motherfucking Pie Chart
-
+						<b class="headingB">Motherfucking Pie Chart</b>
 					</div>
 					<div class="panel-body">
-						<donut-chart data="todo.piedata"></donut-chart>
-						<p id="pielegend"></p>
+						<div class="row">
+							<pie-chart data="model.piedata"></pie-chart>
+							<p id="pielegend"></p>
+						</div>
+					</div>	
+				</div>
+			</div>
+		</div>
+		<!-- Bubble chart -->
+		<div ng-hide="isBubbleChart() == true">
+			<div class="col-md-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<b class="headingB">Motherfucking Bubble Chart</b>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<bubble-chart ></bubble-chart>
+						</div>
 					</div>	
 				</div>
 			</div>
