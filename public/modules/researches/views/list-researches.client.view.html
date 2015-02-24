@@ -1,10 +1,10 @@
 <section data-ng-controller="ResearchesController" data-ng-init="find()">
-	<div class="page-header">
-		<h1>Researches</h1>
-	</div>
+	<div class="well">
+		<h2 class="text-center">Researches</h2>
+	</div>	
 	<div class="list-group">
 		<a data-ng-repeat="research in researches" data-ng-href="#!/researches/{{research._id}}" class="list-group-item">
-			<small class="list-group-item-text">
+			<small class="list-group-item-text" style="float: right">
 				Posted on
 				<span data-ng-bind="research.created | date:'mediumDate'"></span>
 				by

@@ -1,22 +1,25 @@
 'use strict';
 
-angular.module('researches').controller('ResearchesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Researches',
+angular.module('researches').controller('ResearchesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Researches', 'Users',
 	function($scope, $stateParams, $location, Authentication, Researches) {
 		$scope.authentication = Authentication;
+		$scope.duration = '1';
 
 		$scope.create = function() {
-			var research = new Researches({
-				title: this.title,
-				content: this.content
-			});
-			research.$save(function(response) {
-				$location.path('researches/' + response._id);
 
-				$scope.title = '';
-				$scope.content = '';
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
+			var title = $scope.title;
+			var description = $scope.description;
+			var words = $scope.words;
+			var duration = $scope.duration;
+
+			var subject = 'New Research Request';
+			var body = 'New Research Request with || TITLE: ' + title + 
+						' || DESCRIPTION: ' + description + ' || WORDS: ' + words + 
+						' || DURATION: ' + duration + ' weeks.';
+
+			var email = 'support_pandata@outlook.com';
+
+			window.open('mailto:' + email + '?subject='+ subject+ '&body=' + body);
 		};
 
 		$scope.remove = function(research) {
@@ -33,16 +36,6 @@ angular.module('researches').controller('ResearchesController', ['$scope', '$sta
 					$location.path('researches');
 				});
 			}
-		};
-
-		$scope.update = function() {
-			var research = $scope.research;
-
-			research.$update(function() {
-				$location.path('researches/' + research._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
 		};
 
 		$scope.find = function() {

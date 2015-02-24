@@ -6,6 +6,6 @@ angular.module('researches').run(['Menus',
 		// Set top bar menu items
 		Menus.addMenuItem('topbar', 'Researches', 'researches', 'dropdown', '/researches(/create)?');
 		Menus.addSubMenuItem('topbar', 'researches', 'List Researches', 'researches');
-		Menus.addSubMenuItem('topbar', 'researches', 'New Researches', 'researches/create');
+		Menus.addSubMenuItem('topbar', 'researches', 'New Research', 'researches/create');
 	}
 ]);
