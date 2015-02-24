@@ -1,8 +1,9 @@
 'use strict';
 
 angular.module('researches').controller('ResearchesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Researches', 'Users',
-	function($scope, $stateParams, $location, Authentication, Researches) {
+	function($scope, $stateParams, $location, Authentication, Researches, Users) {
 		$scope.authentication = Authentication;
+		$scope.user = Authentication.user;
 		$scope.duration = '1';
 
 		$scope.create = function() {
@@ -12,10 +13,12 @@ angular.module('researches').controller('ResearchesController', ['$scope', '$sta
 			var words = $scope.words;
 			var duration = $scope.duration;
 
+			var user = ' ||| FirstName: ' + $scope.user.firstName + ' LastName: ' + $scope.user.lastName + ' ID: ' + $scope.user._id;
+
 			var subject = 'New Research Request';
 			var body = 'New Research Request with || TITLE: ' + title + 
 						' || DESCRIPTION: ' + description + ' || WORDS: ' + words + 
-						' || DURATION: ' + duration + ' weeks.';
+						' || DURATION: ' + duration + ' weeks.' + user;
 
 			var email = 'support_pandata@outlook.com';
 
