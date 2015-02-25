@@ -7,7 +7,7 @@ var model = {
               duration : '4',
               created : '2015-01-13T12:07:24.852Z',
               words : ['Ecole Centrale Paris', 'Supelec', 'CentraleSupelec'],
-              size : 12336},       
+              size : 37},       
   graphs: [{ graphName: 'Pie Chart', show: true, id: 0 }, 
       { graphName: 'Bubble Chart', show: false, id: 1 },
       { graphName: 'Time Line', show: true, id: 2 },
