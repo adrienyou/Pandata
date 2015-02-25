@@ -75,3 +75,18 @@
   border-color: #fff;
    width: 45%
 }
+
+/* Time Line
+------------------------- */
+
+time-line .line-black { stroke: black; stroke-width: 3px; fill: none;}
+time-line .line-blue { stroke: rgb(31, 119, 180); stroke-width: 3px; fill: none;}
+time-line .line-red { stroke: rgb(255, 127, 14); stroke-width: 3px; fill: none;}
+time-line .line-green { stroke: rgb(44, 160, 44); stroke-width: 3px; fill: none;}
+
+time-line .axis path, time-line .axis line 
+{
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}

@@ -195,82 +195,147 @@ angular.module('graphics')
   function link(scope, element, attr){
     //Getting data
     var data = scope.data;
+
     //Default settings
     var margin = {top: 20, right: 20, bottom: 30, left: 50};
-    var width = 960 - margin.left - margin.right;
+    var width = 1000 - margin.left - margin.right;
     var height = 500 - margin.top - margin.bottom;
-
+    var x = d3.time.scale().range([0, width]);
+    var y = d3.scale.linear().range([height, 0]);
+    
+    //Create axis
+    var xAxis = d3.svg.axis().scale(x).orient('bottom');
+    var yAxis = d3.svg.axis().scale(y).orient('left');
+    
+    //Time parser   
     var parseDate = d3.time.format('%Y%m%d').parse;
 
-    var x = d3.time.scale()
-        .range([0, width]);
-
-    var y = d3.scale.linear()
-        .range([height, 0]);
-
-    var color = d3.scale.category10();
-
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient('bottom');
-
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient('left');
-
+    //Creating svg
     var svg = d3.select(element[0]).append('svg')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
       .append('g')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
+    //Variable to create a line
     var line = d3.svg.line()
       .x(function(d) { return x(d.date); })
       .y(function(d) { return y(d.count); });
 
-    var timelineData = [];
+    //Variables for looping over the data
     var timelinePointer = 0;
+    var datalength = data.length;
+
+    //New objects needed to make the distinction between emotions
+    var timelineData = [];
     var timelineObject = Object.create({date : '', count: 0});
 
-    var datalength = data.length;
+    var timelineDataPos = [];
+    var timelineObjectPos = Object.create({date : '', count: 0});
+
+    var timelineDataNeg = [];
+    var timelineObjectNeg = Object.create({date : '', count: 0});
+
+    var timelineDataNeu = [];
+    var timelineObjectNeu = Object.create({date : '', count: 0});
     
     for (var i = 0; i < datalength; i++) 
     {
       if(timelinePointer === 0)
       {
         timelinePointer = data[i].date;
+
+        //Update general object
         timelineObject.date = parseDate(data[i].date);
         timelineObject.count += 1; 
+
+        //Update matching emotion object.date (so that all the line charts will start at the same point)
+        timelineObjectPos.date = parseDate(data[i].date);
+        timelineObjectNeg.date = parseDate(data[i].date);
+        timelineObjectNeu.date = parseDate(data[i].date);
+
+        //Update matching emotion object.count
+        switch (data[i].emotion) {
+          case 'pos':
+            timelineObjectPos.count += 1; 
+            break;
+          case 'neg':
+            timelineObjectNeg.count += 1;
+            break;
+          case 'neu':
+            timelineObjectNeu.count += 1;
+            break;
+          }
       }
       else if(timelinePointer === data[i].date)
       {
+        //Update general object.count
         timelineObject.count += 1; 
+
+        //Update matching emotion object.count
+        switch (data[i].emotion) {
+          case 'pos':
+            timelineObjectPos.count += 1; 
+            break;
+          case 'neg':
+            timelineObjectNeg.count += 1;
+            break;
+          case 'neu':
+            timelineObjectNeu.count += 1;
+            break;
+          }
       }
       else
       {
-        //Push object in array
+        //Push object in arrays
         timelineData.push(timelineObject);
-        console.log(timelineData);
+        timelineDataPos.push(timelineObjectPos);
+        timelineDataNeg.push(timelineObjectNeg);
+        timelineDataNeu.push(timelineObjectNeu);
+
         //Set pointer
         timelinePointer = data[i].date;
-        //Reset object
         var dateLocal = parseDate(data[i].date);
+
+        //Reset objects
         timelineObject = Object.create({date : dateLocal, count: 1});
+        timelineObjectPos = Object.create({date : dateLocal, count: 1});
+        timelineObjectNeg = Object.create({date : dateLocal, count: 1});
+        timelineObjectNeu = Object.create({date : dateLocal, count: 1});
+
+        //Update matching emotion object.count
+        switch (data[i].emotion) {
+          case 'pos':
+            timelineObjectPos.count += 1; 
+            break;
+          case 'neg':
+            timelineObjectNeg.count += 1;
+            break;
+          case 'neu':
+            timelineObjectNeu.count += 1;
+            break;
+        }
       }
-      //console.log(timelineObject);
     }
+    //Push object in arrays
     timelineData.push(timelineObject);
+    timelineDataPos.push(timelineObjectPos);
+    timelineDataNeg.push(timelineObjectNeg);
+    timelineDataNeu.push(timelineObjectNeu);
 
     console.log(timelineData);
 
+    //Set x and y domains (using timelineData because it will have the higher count)
     x.domain(d3.extent(timelineData, function(d) { return d.date ; }));
     y.domain([0, d3.max(timelineData, function(d) { return d.count; })]);
 
+    //Add xAxis to svg
     svg.append('g')
       .attr('class', 'x axis')
       .attr('transform', 'translate(0,' + height + ')')
       .call(xAxis);
 
+    //Add yAxis to svg
     svg.append('g')
       .attr('class', 'y axis')
       .call(yAxis)
@@ -281,9 +346,28 @@ angular.module('graphics')
       .style('text-anchor', 'end')
       .text('Number of tweets');
 
+    //Add general line graph to svg
     svg.append('path')
         .datum(timelineData)
-        .attr('class', 'line')
+        .attr('class', 'line-black')
+        .attr('d', line);
+
+    //Add general line graph to svg
+    svg.append('path')
+        .datum(timelineDataPos)
+        .attr('class', 'line-blue')
+        .attr('d', line);
+
+    //Add general line graph to svg
+    svg.append('path')
+        .datum(timelineDataNeg)
+        .attr('class', 'line-red')
+        .attr('d', line);
+
+    //Add general line graph to svg
+    svg.append('path')
+        .datum(timelineDataNeu)
+        .attr('class', 'line-green')
         .attr('d', line);
 
   }
