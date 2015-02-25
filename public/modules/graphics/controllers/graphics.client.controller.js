@@ -17,16 +17,34 @@ var model = {
             {label: 'Neutral emotion', value: 45}
             ],  
   tweets: [ {date: '20150201', emotion: 'pos', retweet: '10', text: ''},
-            {date: '20150201', emotion: 'pos', retweet: '15', text: ''},
+            {date: '20150201', emotion: 'pos', retweet: '10', text: ''},
+            {date: '20150201', emotion: 'pos', retweet: '10', text: ''},
+            {date: '20150201', emotion: 'neu', retweet: '10', text: ''},
+            {date: '20150201', emotion: 'pos', retweet: '10', text: ''},
+            {date: '20150201', emotion: 'neu', retweet: '10', text: ''},
+            {date: '20150201', emotion: 'pos', retweet: '10', text: ''},
+            {date: '20150201', emotion: 'neg', retweet: '15', text: ''},
             {date: '20150201', emotion: 'neg', retweet: '0', text: ''},
             {date: '20150201', emotion: 'neu', retweet: '0', text: ''},
             {date: '20150202', emotion: 'pos', retweet: '11', text: ''},
             {date: '20150202', emotion: 'neg', retweet: '12', text: ''},
-            {date: '20150202', emotion: 'neg', retweet: '5', text: ''},
+            {date: '20150202', emotion: 'pos', retweet: '5', text: ''},
             {date: '20150202', emotion: 'neu', retweet: '3', text: ''},
             {date: '20150202', emotion: 'neu', retweet: '6', text: ''},
             {date: '20150203', emotion: 'neg', retweet: '8', text: ''},
+            {date: '20150203', emotion: 'pos', retweet: '88', text: ''},
+            {date: '20150203', emotion: 'pos', retweet: '150', text: ''},
+            {date: '20150203', emotion: 'neg', retweet: '8', text: ''},
             {date: '20150203', emotion: 'neg', retweet: '88', text: ''},
+            {date: '20150203', emotion: 'pos', retweet: '150', text: ''},
+            {date: '20150203', emotion: 'neg', retweet: '8', text: ''},
+            {date: '20150203', emotion: 'pos', retweet: '88', text: ''},
+            {date: '20150203', emotion: 'pos', retweet: '150', text: ''},
+            {date: '20150203', emotion: 'neg', retweet: '8', text: ''},
+            {date: '20150203', emotion: 'neu', retweet: '88', text: ''},
+            {date: '20150203', emotion: 'neu', retweet: '150', text: ''},
+            {date: '20150203', emotion: 'neu', retweet: '8', text: ''},
+            {date: '20150203', emotion: 'neu', retweet: '88', text: ''},
             {date: '20150203', emotion: 'neg', retweet: '150', text: ''},
             {date: '20150204', emotion: 'pos', retweet: '143', text: ''},
             {date: '20150204', emotion: 'pos', retweet: '0', text: ''},
@@ -157,7 +175,6 @@ angular.module('graphics')
     var data = scope.data;
     //Default settings
     var color = d3.scale.category10();
-    var data = scope.data;
     var width = 300;
     var height = 300;
     var min = Math.min(width, height);
@@ -179,7 +196,7 @@ angular.module('graphics')
     //Getting data
     var data = scope.data;
     //Default settings
-    var margin = {top: 20, right: 80, bottom: 30, left: 50};
+    var margin = {top: 20, right: 20, bottom: 30, left: 50};
     var width = 960 - margin.left - margin.right;
     var height = 500 - margin.top - margin.bottom;
 
@@ -201,27 +218,53 @@ angular.module('graphics')
         .scale(y)
         .orient('left');
 
-    var line = d3.svg.line()
-        //.interpolate('basis')
-        .x(function(d) { return d.date; })
-        .y(function(d) { return d.retweet; });
-
     var svg = d3.select(element[0]).append('svg')
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
       .append('g')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-    data.forEach(function(d) {
-      d.date = parseDate(d.date);
-    });
+    var line = d3.svg.line()
+      .x(function(d) { return x(d.date); })
+      .y(function(d) { return y(d.count); });
 
-    x.domain(d3.extent(data, function(d) { return d.date; }));
+    var timelineData = [];
+    var timelinePointer = 0;
+    var timelineObject = Object.create({date : '', count: 0});
 
-    y.domain([
-      d3.min(data, function(d) { return d.retweet; }),
-      d3.max(data, function(d) { return d.retweet; })
-    ]);
+    var datalength = data.length;
+    
+    for (var i = 0; i < datalength; i++) 
+    {
+      if(timelinePointer === 0)
+      {
+        timelinePointer = data[i].date;
+        timelineObject.date = parseDate(data[i].date);
+        timelineObject.count += 1; 
+      }
+      else if(timelinePointer === data[i].date)
+      {
+        timelineObject.count += 1; 
+      }
+      else
+      {
+        //Push object in array
+        timelineData.push(timelineObject);
+        console.log(timelineData);
+        //Set pointer
+        timelinePointer = data[i].date;
+        //Reset object
+        var dateLocal = parseDate(data[i].date);
+        timelineObject = Object.create({date : dateLocal, count: 1});
+      }
+      //console.log(timelineObject);
+    }
+    timelineData.push(timelineObject);
+
+    console.log(timelineData);
+
+    x.domain(d3.extent(timelineData, function(d) { return d.date ; }));
+    y.domain([0, d3.max(timelineData, function(d) { return d.count; })]);
 
     svg.append('g')
       .attr('class', 'x axis')
@@ -236,18 +279,12 @@ angular.module('graphics')
       .attr('y', 6)
       .attr('dy', '.71em')
       .style('text-anchor', 'end')
-      .text('Retweet');
+      .text('Number of tweets');
 
-    var emotion = svg.selectAll('.emotion')
-      .data(data)
-      .enter().append('g')
-      .attr('class', 'emotion');
-
-    emotion.append('path')
-      .attr('class', 'line')
-      .attr('d', line)
-      //.style("stroke", function(d) { return color(d.emotion); })
-      ;
+    svg.append('path')
+        .datum(timelineData)
+        .attr('class', 'line')
+        .attr('d', line);
 
   }
   return {

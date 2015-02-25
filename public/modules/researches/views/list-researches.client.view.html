@@ -18,8 +18,9 @@
 			<p class="list-group-item-text" data-ng-bind="research.negative_emotion"></p>
 			<p class="list-group-item-text" data-ng-bind="research"></p>
 
-			<div data-ng-repeat="tweet in research.tweet" class="list-group-item">
+			<div data-ng-repeat="tweet in research.tweets" class="list-group-item">
 				<p class="list-group-item-text" data-ng-bind="tweet.text"></p>
+				<p class="list-group-item-text" data-ng-bind="tweet.emotion"></p>
 			</div>
 		</a>
 	</div>
