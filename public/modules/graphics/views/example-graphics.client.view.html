@@ -38,16 +38,15 @@
 			     			<tr ng-repeat="graph in model.graphs">
 			                    <td>{{graph.graphName}}</td>
 			                    <td><input type="checkbox" ng-model="graph.show" /></td>
-			                    <td>{{graph.show}}</td> 
 			               </tr>            
 						</tbody>        
 					</table> 
 				</div>	
 			</div>
 		</div>
-
 	</div>
 
+	<!-- Second row, for pie chart and bubble chart -->
 	<div class="row">
 		<!-- Pie Chart -->
 		<div ng-hide="isPieChart() == true">
@@ -80,7 +79,7 @@
 		</div>
 	</div>
 	
-	<!-- Time Line -->
+	<!-- Third row, for time line chart -->
 	<div ng-hide="isTimeLine() == true">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
@@ -89,6 +88,53 @@
 			<div class="panel-body">
 				<time-line data="model.tweets"></time-line>
 			</div>	
+		</div>
+	</div>
+
+	<!-- Fourth row, for buzz chart and something else chart -->
+	<div class="row">
+		<!-- Pie Chart -->
+		<div ng-hide="isBuzzChart() == true">
+			<div class="col-md-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<b class="headingB">Buzz Chart</b>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<table class="table table-striped table-bordered table-condensed">                
+								<thead>                    
+									<tr>                        
+										<td>Text</td>                        
+										<td>Emotion</td>                        
+										<td class="text-right">Retweet Count</td>                                       
+									</tr>                
+								</thead>                
+								<tbody>                    
+									<tr ng-repeat="tweet in tweets | buzzFilter | limitTo:limitVal">                        
+										<td>{{tweet.text}}</td>                        
+										<td>{{tweet.emotion}}</td>                         
+										<td class="text-right">{{tweet.retweet}}</td>                                          
+									</tr>                
+								</tbody>            
+							</table> 
+						</div>
+					</div>	
+				</div>
+			</div>
+		</div>
+		<!-- Something else chart -->
+		<div ng-hide="isSomethingChart() == true">
+			<div class="col-md-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<b class="headingB">Something Chart</b>
+					</div>
+					<div class="panel-body">
+						<something-chart ></something-chart>
+					</div>	
+				</div>
+			</div>
 		</div>
 	</div>
 

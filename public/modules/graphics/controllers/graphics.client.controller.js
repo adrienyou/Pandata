@@ -9,9 +9,10 @@ var model = {
               words : ['Ecole Centrale Paris', 'Supelec', 'CentraleSupelec'],
               size : 37},       
   graphs: [{ graphName: 'Pie Chart', show: true, id: 0 }, 
-      { graphName: 'Bubble Chart', show: false, id: 1 },
-      { graphName: 'Time Line', show: true, id: 2 },
-      { graphName: 'Something', show: false, id: 3 }],
+      { graphName: 'Bubble Chart', show: true, id: 1 },
+      { graphName: 'Time Line Chart', show: true, id: 2 },
+      { graphName: 'Buzz Chart', show: true, id: 3 },
+      { graphName: 'Something Chart', show: true, id: 4 }],
   piedata: [{label: 'Positive emotion', value: 25},
             {label: 'Negative emotion', value: 30},
             {label: 'Neutral emotion', value: 45}
@@ -33,19 +34,19 @@ var model = {
             {date: '20150202', emotion: 'neu', retweet: '6', text: ''},
             {date: '20150203', emotion: 'neg', retweet: '8', text: ''},
             {date: '20150203', emotion: 'pos', retweet: '88', text: ''},
-            {date: '20150203', emotion: 'pos', retweet: '150', text: ''},
+            {date: '20150203', emotion: 'pos', retweet: '160', text: 'This should be the first'},
             {date: '20150203', emotion: 'neg', retweet: '8', text: ''},
             {date: '20150203', emotion: 'neg', retweet: '88', text: ''},
-            {date: '20150203', emotion: 'pos', retweet: '150', text: ''},
+            {date: '20150203', emotion: 'pos', retweet: '159', text: 'This should be the 2nd'},
             {date: '20150203', emotion: 'neg', retweet: '8', text: ''},
             {date: '20150203', emotion: 'pos', retweet: '88', text: ''},
-            {date: '20150203', emotion: 'pos', retweet: '150', text: ''},
+            {date: '20150203', emotion: 'pos', retweet: '158', text: 'This should be the third'},
             {date: '20150203', emotion: 'neg', retweet: '8', text: ''},
             {date: '20150203', emotion: 'neu', retweet: '88', text: ''},
-            {date: '20150203', emotion: 'neu', retweet: '150', text: ''},
+            {date: '20150203', emotion: 'neu', retweet: '157', text: 'Fourth one right here'},
             {date: '20150203', emotion: 'neu', retweet: '8', text: ''},
             {date: '20150203', emotion: 'neu', retweet: '88', text: ''},
-            {date: '20150203', emotion: 'neg', retweet: '150', text: ''},
+            {date: '20150203', emotion: 'neg', retweet: '156', text: 'Aaaand the fifth'},
             {date: '20150204', emotion: 'pos', retweet: '143', text: ''},
             {date: '20150204', emotion: 'pos', retweet: '0', text: ''},
             {date: '20150204', emotion: 'neg', retweet: '12', text: ''},
@@ -60,7 +61,9 @@ angular.module('graphics')
 
 .controller('GraphicsController', function($scope) {
   $scope.model = model;
+  $scope.limitVal = "40";
 
+  //Function to know if the checkbox Pie Chart is checked or not
   $scope.isPieChart = function() {
     var value = false;
     angular.forEach($scope.model.graphs, function(graph){
@@ -69,6 +72,7 @@ angular.module('graphics')
     return value;
   };
 
+  //Function to know if the checkbox Bubble Chart is checked or not
   $scope.isBubbleChart = function() {
     var value = false;
     angular.forEach($scope.model.graphs, function(graph){
@@ -77,6 +81,7 @@ angular.module('graphics')
     return value;
   };
 
+  //Function to know if the checkbox Time Line Chart is checked or not
   $scope.isTimeLine = function() {
     var value = false;
     angular.forEach($scope.model.graphs, function(graph){
@@ -85,8 +90,26 @@ angular.module('graphics')
     return value;
   };
 
+  //Function to know if the checkbox Buzz Chart is checked or not
+  $scope.isBuzzChart = function() {
+    var value = false;
+    angular.forEach($scope.model.graphs, function(graph){
+      if(graph.id === 3 && !graph.show) { value = true; }
+    });
+    return value;
+  };
+
+  //Function to know if the checkbox Something Chart is checked or not
+  $scope.isSomethingChart = function() {
+    var value = false;
+    angular.forEach($scope.model.graphs, function(graph){
+      if(graph.id === 4 && !graph.show) { value = true; }
+    });
+    return value;
+  };
 })
 
+//Directive for Pie Chart
 .directive('pieChart', function(){ 
 	function link(scope, element, attr){
     //Getting data
@@ -135,40 +158,40 @@ angular.module('graphics')
     
     //Add the <path>s for each arc slice and the transition
     var arcs = g.selectAll('path').data(pie(data))
-      .enter()
-        .append('g')
-            .attr('class', 'slice')
-            .on('mouseover', function(d) {
-                d3.select(this).select('path').transition()
-                    .duration(200)
-                    .attr('d', arcOver);
+      .enter().append('g')
+        .attr('class', 'slice')
+        .on('mouseover', function(d) {
+            d3.select(this).select('path').transition()
+                .duration(200)
+                .attr('d', arcOver);
 
-                legendTop.text(d3.select(this).datum().data.label + ': ');
-                legendBot.text(d3.select(this).datum().data.value.toFixed(2));
-            })
-            .on('mouseout', function(d) {
-                d3.select(this).select('path').transition()
-                    .duration(100)
-                    .attr('d', arc);
+            legendTop.text(d3.select(this).datum().data.label + ': ');
+            legendBot.text(d3.select(this).datum().data.value.toFixed(2));
+        })
+        .on('mouseout', function(d) {
+            d3.select(this).select('path').transition()
+                .duration(100)
+                .attr('d', arc);
 
-                legendTop.text('Emotion: ');
-                legendBot.text('Value');
+            legendTop.text('Emotion: ');
+            legendBot.text('Value');
 
-            });
+        });
 
-      arcs.append('path')
-        .style('stroke', 'white')
-        .attr('d', arc)
-        .attr('fill', function(d, i){ return color(i); });
+    arcs.append('path')
+      .style('stroke', 'white')
+      .attr('d', arc)
+      .attr('fill', function(d, i){ return color(i); });
 
-    }
-      return {
-        link: link,
-        restrict: 'E',
-        scope: { data: '=' }
-      };
-    })
+  }
+  return {
+    link: link,
+    restrict: 'E',
+    scope: { data: '=' }
+  };
+})
 
+//Directive for Bubble Chart
 .directive('bubbleChart', function(){ 
   function link(scope, element, attr){
     //Getting data
@@ -183,14 +206,15 @@ angular.module('graphics')
     var svg = d3.select(element[0]).append('svg')
       .attr({width: width, height: height});    
 
-    }
-      return {
-        link: link,
-        restrict: 'E',
-        scope: { data: '=' }
-      };
-    })
+  }
+  return {
+    link: link,
+    restrict: 'E',
+    scope: { data: '=' }
+  };
+})
 
+//Directive for Time Line Chart
 .directive('timeLine', function(){ 
   function link(scope, element, attr){
     //Getting data
@@ -323,8 +347,6 @@ angular.module('graphics')
     timelineDataNeg.push(timelineObjectNeg);
     timelineDataNeu.push(timelineObjectNeu);
 
-    console.log(timelineData);
-
     //Set x and y domains (using timelineData because it will have the higher count)
     x.domain(d3.extent(timelineData, function(d) { return d.date ; }));
     y.domain([0, d3.max(timelineData, function(d) { return d.count; })]);
@@ -376,4 +398,11 @@ angular.module('graphics')
     restrict: 'E',
     scope: { data: '=' }
   };
-});
+})
+
+//Filter for Buzz Chart
+ .filter("buzzFilter", function () {        
+  return function (data) { 
+    return data;      
+    }    
+});;
