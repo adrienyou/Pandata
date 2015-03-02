@@ -11,17 +11,18 @@
 				<span data-ng-bind="research.user.displayName"></span>
 				for a <span data-ng-bind="research.duration"></span> weeks duration
 			</small>
-			<h4 class="list-group-item-heading" data-ng-bind="research.name"></h4>
+			<h4 class="list-group-item-heading" data-ng-bind="research.title"></h4>
+			<p class="list-group-item-text" data-ng-bind="research.description"></p>
 			<p class="list-group-item-text" data-ng-bind="research.words"></p>
 			<p class="list-group-item-text" data-ng-bind="research.size"></p>
 			<p class="list-group-item-text" data-ng-bind="research.positive_emotion"></p>
 			<p class="list-group-item-text" data-ng-bind="research.negative_emotion"></p>
 			<p class="list-group-item-text" data-ng-bind="research"></p>
 
-			<div data-ng-repeat="tweet in research.tweets" class="list-group-item">
+			<!--<div data-ng-repeat="tweet in research.tweets" class="list-group-item">
 				<p class="list-group-item-text" data-ng-bind="tweet.text"></p>
 				<p class="list-group-item-text" data-ng-bind="tweet.emotion"></p>
-			</div>
+			</div>-->
 		</a>
 	</div>
 	<div class="alert alert-warning text-center" data-ng-if="researches.$resolved && !researches.length">

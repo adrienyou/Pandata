@@ -14,7 +14,7 @@ angular.module('researches').config(['$stateProvider',
 			templateUrl: 'modules/researches/views/create-research.client.view.html'
 		}).
 		state('viewResearch', {
-			url: '/researches/:articleId',
+			url: '/researches/:researchId',
 			templateUrl: 'modules/researches/views/view-research.client.view.html'
 		}).
 		state('editResearch', {

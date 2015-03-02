@@ -1,22 +1,70 @@
 <section data-ng-controller="ResearchesController" data-ng-init="findOne()">
-	<div class="page-header">
-		<h1 data-ng-bind="research.name"></h1>
+	<div class="well">
+		<h2 class="text-center" data-ng-bind="research.title"></h2>
 	</div>
-	<div class="pull-right" data-ng-show="authentication.user._id == research.user._id">
-		<a class="btn btn-primary" href="/#!/research/{{research._id}}/edit">
-			<i class="glyphicon glyphicon-edit"></i>
-		</a>
-		<a class="btn btn-primary" data-ng-click="remove();">
-			<i class="glyphicon glyphicon-trash"></i>
-		</a>
+
+	<!-- First row, for research description and charts selection -->
+		<div class="row">
+			<!-- Panel for basics info about the research -->
+			<div class="col-md-6">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<b class="headingB">{{research.title}} by {{research.user.displayName}}</b>
+					</div>
+					<div class="panel-body">
+						<b class="headingD">Research description:</b> {{research.description}}.<br/><br/>
+						<b class="headingD">Research duration:</b> {{research.duration}} weeks.<br/><br/>
+						<b class="headingD">Research size:</b> This research has {{research.size}} tweets.<br/><br/>
+						<b class="headingD">Words used for this research:</b> <span ng-repeat="word in research.words">{{word}} </span><br/><br/>
+						<b class="headingD">Social medias tracked: </b> <span>Twitter</span><br/><br/>
+					</div>	
+				</div>
+			</div>			
+			<!-- Panel for charts selection -->
+			<div class="col-md-6">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<b class="headingB">Selection of boards</b>
+					</div>
+					<div class="panel-body">
+						<table class="table table-striped">            
+							<thead>                
+								<tr>                    
+									<th>Graphic Name</th>                    
+									<th>Show</th>                
+								</tr>            
+							</thead>            
+							<tbody>                
+				     			<tr ng-repeat="graph in graphs">
+				                    <td>{{graph.graphName}}</td>
+				                    <td><input type="checkbox" ng-model="graph.show" /></td>
+				               </tr>            
+							</tbody>        
+						</table> 
+					</div>	
+				</div>
+			</div>
+		</div>
+	<!-- Second row, for pie chart and bubble chart -->
+	<div class="row">
+		<!-- Pie Chart -->
+		<div ng-hide="isPieChart() == true">
+			<div class="col-md-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<b class="headingB">Pie Chart</b>
+					</div>
+					<div class="panel-body">
+						<div class="text-center">
+							<pie data="research"></pie>
+							<p id="pielegend"></p>
+						</div>
+					</div>	
+				</div>
+			</div>
+		</div>
+
 	</div>
-	<small>
-		<em class="text-muted">
-			Posted on
-			<span data-ng-bind="research.created | date:'mediumDate'"></span>
-			by
-			<span data-ng-bind="research.user.displayName"></span>
-		</em>
-	</small>
-	<p class="lead" data-ng-bind="research.tweets"></p>
+	
+	
 </section>

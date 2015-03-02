@@ -7,12 +7,12 @@ var users = require('../../app/controllers/users.server.controller'),
 	researches = require('../../app/controllers/researches.server.controller');
 
 module.exports = function(app) {
-	// Research Routes
+	// Researches Routes
 	app.route('/researches')
 		.get(researches.list)
 		.post(users.requiresLogin, researches.create);
 
-	app.route('/researches/:researcheId')
+	app.route('/researches/:researchId')
 		.get(researches.read)
 		.put(users.requiresLogin, researches.hasAuthorization, researches.update)
 		.delete(users.requiresLogin, researches.hasAuthorization, researches.delete);

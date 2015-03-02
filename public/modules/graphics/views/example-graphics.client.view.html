@@ -56,7 +56,7 @@
 						<b class="headingB">Pie Chart</b>
 					</div>
 					<div class="panel-body">
-						<div class="row">
+						<div class="text-center">
 							<pie-chart data="model.piedata"></pie-chart>
 							<p id="pielegend"></p>
 						</div>
@@ -101,7 +101,7 @@
 						<b class="headingB">Buzz Chart</b>
 					</div>
 					<div class="panel-body">
-						<div class="row">
+						<div class="text-center">
 							<table class="table table-striped table-bordered table-condensed">                
 								<thead>                    
 									<tr>                        
@@ -111,10 +111,8 @@
 									</tr>                
 								</thead>                
 								<tbody>                    
-									<tr ng-repeat="tweet in tweets | buzzFilter | limitTo:limitVal">                        
-										<td>{{tweet.text}}</td>                        
-										<td>{{tweet.emotion}}</td>                         
-										<td class="text-right">{{tweet.retweet}}</td>                                          
+									<tr>                        
+										<buzz-chart data="model.tweets"></buzz-chart>                                      
 									</tr>                
 								</tbody>            
 							</table> 

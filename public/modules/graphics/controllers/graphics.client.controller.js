@@ -400,9 +400,19 @@ angular.module('graphics')
   };
 })
 
-//Filter for Buzz Chart
- .filter("buzzFilter", function () {        
-  return function (data) { 
-    return data;      
-    }    
-});;
+//Directive for Buzz Chart
+ .directive('buzzChart', function(){ 
+  function link(scope, element, attr){
+    //Getting data
+    var mydata = scope.data;
+
+    //Create new object and sort it, so that the sort won't affect the other charts
+
+    //Once it's sorted, do for (i=0 to 5) and append td: text, td: emotion & td: retweet (class="text-right") 
+  }
+  return {
+    link: link,
+    restrict: 'E',
+    scope: { data: '=' }
+  };
+});
