@@ -17,6 +17,35 @@
 					<b class="headingD">Research size:</b> This research has {{model.research.size}} tweets.<br/><br/>
 					<b class="headingD">Words used for this research:</b> <span ng-repeat="word in model.research.words">{{word}} </span><br/><br/>
 					<b class="headingD">Social medias tracked: </b> <span>Twitter</span><br/><br/>
+					<b class="headingD">Legend: </b>
+					&nbsp;
+						<span>
+							<svg width="30" height="12">
+	  							<rect width="30" height="12" style="fill:rgb(31,119,180);">  
+							</svg>
+	 						Positive
+ 						</span>
+ 						&nbsp;
+ 						<span>
+							<svg width="30" height="12">
+	  							<rect width="30" height="12" style="fill:rgb(255,127,14);">  
+							</svg>
+	 						Negative
+ 						</span>
+ 						&nbsp;
+ 						<span>
+							<svg width="30" height="12">
+	  							<rect width="30" height="12" style="fill:rgb(44,160,44);">  
+							</svg>
+	 						Neutral
+ 						</span>
+ 						&nbsp;
+ 						<span>
+							<svg width="30" height="12">
+	  							<rect width="30" height="12" style="fill:rgb(0,0,0);">  
+							</svg>
+	 						Total
+ 						</span>
 				</div>	
 			</div>
 		</div>			
@@ -102,20 +131,7 @@
 					</div>
 					<div class="panel-body">
 						<div class="text-center">
-							<table class="table table-striped table-bordered table-condensed">                
-								<thead>                    
-									<tr>                        
-										<td>Text</td>                        
-										<td>Emotion</td>                        
-										<td class="text-right">Retweet Count</td>                                       
-									</tr>                
-								</thead>                
-								<tbody>                    
-									<tr>                        
-										<buzz-chart data="model.tweets"></buzz-chart>                                      
-									</tr>                
-								</tbody>            
-							</table> 
+							<buzz-chart data="model.tweets"></buzz-chart>
 						</div>
 					</div>	
 				</div>

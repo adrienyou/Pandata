@@ -140,6 +140,7 @@ angular.module('graphics')
     var legendTop = d3.select('#pielegend').append('text')
       .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')')
       .attr('dy', '.35em')
+      .attr('font-weight', 'bold')
       .style('text-anchor', 'middle')
       .text('Emotion: ')
       .attr('y', -10);
@@ -166,7 +167,7 @@ angular.module('graphics')
                 .attr('d', arcOver);
 
             legendTop.text(d3.select(this).datum().data.label + ': ');
-            legendBot.text(d3.select(this).datum().data.value.toFixed(2));
+            legendBot.text(d3.select(this).datum().data.value.toFixed(1) + '%');
         })
         .on('mouseout', function(d) {
             d3.select(this).select('path').transition()
@@ -402,13 +403,44 @@ angular.module('graphics')
 
 //Directive for Buzz Chart
  .directive('buzzChart', function(){ 
-  function link(scope, element, attr){
+  function link(scope, iElement, attr){
     //Getting data
-    var mydata = scope.data;
+    var data = scope.data;
 
-    //Create new object and sort it, so that the sort won't affect the other charts
+    //Function used to sort data (by retweet number)
+    function compare(a,b) {
+      if (+a.retweet < +b.retweet)
+         return 1;
+      if (+a.retweet > +b.retweet)
+        return -1;
+      return 0;
+    }
 
-    //Once it's sorted, do for (i=0 to 5) and append td: text, td: emotion & td: retweet (class="text-right") 
+    //New object, which is a sorted array created from the data
+    var buzzdata = Object.create(data.sort(compare));
+
+    //console.log(buzzdata[0].retweet);
+
+    //Creating the table tags
+    var strRow = '<table class="table table-striped table-bordered table-condensed"><thead><td>Text</td><td>Emotion</td>' 
+      + '<td>Retweet Count</td></tr></thead><tbody>';
+
+    //Fill the tbody
+    for(var i=0; i <5; i++)
+    {
+      var strLocal = '<tr><td>' + buzzdata[i].text + '</td>' + '<td>' + buzzdata[i].emotion + '</td>' + '<td>' + buzzdata[i].retweet + '</td></tr>';
+      strRow = strRow.concat(strLocal);
+    }
+
+    //Close the table tags
+    strRow = strRow.concat('</tbody></table>')
+
+    //Table with the data
+    var table = angular.element(strRow);
+    
+    //Append the table to the buzz-chart element        
+    iElement.append(table);
+
   }
   return {
     link: link,
