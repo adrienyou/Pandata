@@ -7,7 +7,14 @@ var model = {
               duration : '4',
               created : '2015-01-13T12:07:24.852Z',
               words : ['Ecole Centrale Paris', 'Supelec', 'CentraleSupelec'],
-              size : 37},       
+              size : 37,
+              negative_dictio : [
+              {_id : 'absurd', count : 8}, {_id : 'confusing', count : 6}, {_id : 'delirious', count : 3}, {_id : 'foul', count : 3}
+              ],
+              positive_dictio : [
+              {_id : 'accomplished', count : 12}, {_id : 'enhancement', count : 8}, {_id : 'lucid', count : 4}, {_id : 'simplest', count : 4}
+              ]
+            },       
   graphs: [{ graphName: 'Pie Chart', show: true, id: 0 }, 
       { graphName: 'Bubble Chart', show: true, id: 1 },
       { graphName: 'Time Line Chart', show: true, id: 2 },
@@ -471,32 +478,40 @@ angular.module('graphics')
       .append('g')
         .attr('transform', 'translate(' + margin.left + ',' + margin.right + ')'); 
 
-      // Parse numbers, and sort by value.
-      data.forEach(function(d) { d.value = +d.value; });
-      data.sort(function(a, b) { return b.value - a.value; });
+    // Parse numbers, and sort by value.
+    data.forEach(function(d) { d.value = +d.value; });
+    data.sort(function(a, b) { return b.value - a.value; });
 
-      // Set the scale domain.
-      x.domain([0, d3.max(data, function(d) { return d.value; })]);
-      y.domain(data.map(function(d) { return d.name; }));
+    //Variables for looping over the data
+    var timelinePointer = 0;
+    var datalength = data.length;
 
-      var bar = svg.selectAll("g.bar")
-          .data(data)
-        .enter().append("g")
-          .attr("class", "bar")
-          .attr("transform", function(d) { return "translate(0," + y(d.name) + ")"; });
+    //New objects needed to make the distinction between emotions
+    var timelineData = [];
+    var timelineObject = Object.create({place : '', count: 0});
 
-      bar.append("rect")
-          .attr("width", function(d) { return x(d.value); })
-          .attr("height", y.rangeBand());
+    // Set the scale domain.
+    x.domain([0, d3.max(data, function(d) { return d.value; })]);
+    y.domain(data.map(function(d) { return d.name; }));
 
-      bar.append("text")
-          .attr("class", "value")
-          .attr("x", function(d) { return x(d.value); })
-          .attr("y", y.rangeBand() / 2)
-          .attr("dx", -3)
-          .attr("dy", ".35em")
-          .attr("text-anchor", "end")
-          .text(function(d) { return format(d.value); });
+    var bar = svg.selectAll("g.bar")
+        .data(data)
+      .enter().append("g")
+        .attr("class", "bar")
+        .attr("transform", function(d) { return "translate(0," + y(d.name) + ")"; });
+
+    bar.append("rect")
+        .attr("width", function(d) { return x(d.value); })
+        .attr("height", y.rangeBand());
+
+    bar.append("text")
+        .attr("class", "value")
+        .attr("x", function(d) { return x(d.value); })
+        .attr("y", y.rangeBand() / 2)
+        .attr("dx", -3)
+        .attr("dy", ".35em")
+        .attr("text-anchor", "end")
+        .text(function(d) { return format(d.value); });
 
       svg.append("g")
           .attr("class", "x axis")
@@ -513,3 +528,4 @@ angular.module('graphics')
     scope: { data: '=' }
   };
 });
+
