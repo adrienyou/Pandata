@@ -12,7 +12,7 @@ var model = {
       { graphName: 'Bubble Chart', show: true, id: 1 },
       { graphName: 'Time Line Chart', show: true, id: 2 },
       { graphName: 'Buzz Chart', show: true, id: 3 },
-      { graphName: 'Something Chart', show: true, id: 4 }],
+      { graphName: 'Bar Chart', show: true, id: 4 }],
   piedata: [{label: 'Positive emotion', value: 25},
             {label: 'Negative emotion', value: 30},
             {label: 'Neutral emotion', value: 45}
@@ -34,20 +34,20 @@ var model = {
             {date: '20150202', emotion: 'neu', retweet: '6', text: ''},
             {date: '20150203', emotion: 'neg', retweet: '8', text: ''},
             {date: '20150203', emotion: 'pos', retweet: '88', text: ''},
-            {date: '20150203', emotion: 'pos', retweet: '160', text: 'This should be the first'},
+            {date: '20150203', emotion: 'pos', retweet: '480', text: 'CentraleSupelec is the new technopole in France.'},
             {date: '20150203', emotion: 'neg', retweet: '8', text: ''},
             {date: '20150203', emotion: 'neg', retweet: '88', text: ''},
-            {date: '20150203', emotion: 'pos', retweet: '159', text: 'This should be the 2nd'},
+            {date: '20150203', emotion: 'pos', retweet: '321', text: 'Centrale and Supelec just announced the creation of CentraleSupelec'},
             {date: '20150203', emotion: 'neg', retweet: '8', text: ''},
             {date: '20150203', emotion: 'pos', retweet: '88', text: ''},
-            {date: '20150203', emotion: 'pos', retweet: '158', text: 'This should be the third'},
+            {date: '20150203', emotion: 'neg', retweet: '202', text: 'When is CentraleSupelec opening? It is late, right?'},
             {date: '20150203', emotion: 'neg', retweet: '8', text: ''},
             {date: '20150203', emotion: 'neu', retweet: '88', text: ''},
-            {date: '20150203', emotion: 'neu', retweet: '157', text: 'Fourth one right here'},
+            {date: '20150203', emotion: 'neu', retweet: '96', text: '@CentraleSupelec What about foreign students in 2018? Can we still come?'},
             {date: '20150203', emotion: 'neu', retweet: '8', text: ''},
             {date: '20150203', emotion: 'neu', retweet: '88', text: ''},
-            {date: '20150203', emotion: 'neg', retweet: '156', text: 'Aaaand the fifth'},
-            {date: '20150204', emotion: 'pos', retweet: '143', text: ''},
+            {date: '20150203', emotion: 'pos', retweet: '94', text: 'Hervé Biausser is now director of CentraleSupelec'},
+            {date: '20150204', emotion: 'pos', retweet: '12', text: ''},
             {date: '20150204', emotion: 'pos', retweet: '0', text: ''},
             {date: '20150204', emotion: 'neg', retweet: '12', text: ''},
             {date: '20150204', emotion: 'neu', retweet: '3', text: ''},
@@ -61,7 +61,6 @@ angular.module('graphics')
 
 .controller('GraphicsController', function($scope) {
   $scope.model = model;
-  $scope.limitVal = "40";
 
   //Function to know if the checkbox Pie Chart is checked or not
   $scope.isPieChart = function() {
@@ -99,8 +98,8 @@ angular.module('graphics')
     return value;
   };
 
-  //Function to know if the checkbox Something Chart is checked or not
-  $scope.isSomethingChart = function() {
+  //Function to know if the checkbox Bar Chart is checked or not
+  $scope.isBarChart = function() {
     var value = false;
     angular.forEach($scope.model.graphs, function(graph){
       if(graph.id === 4 && !graph.show) { value = true; }
@@ -402,7 +401,7 @@ angular.module('graphics')
 })
 
 //Directive for Buzz Chart
- .directive('buzzChart', function(){ 
+.directive('buzzChart', function(){ 
   function link(scope, iElement, attr){
     //Getting data
     var data = scope.data;
@@ -441,6 +440,72 @@ angular.module('graphics')
     //Append the table to the buzz-chart element        
     iElement.append(table);
 
+  }
+  return {
+    link: link,
+    restrict: 'E',
+    scope: { data: '=' }
+  };
+})
+
+//Directive for Bar Chart
+.directive('barChart', function(){ 
+  function link(scope, element, attr){
+    //Getting data
+    var data = scope.data;
+    
+    //Default settings
+    var margin = {top: 20, right: 20, bottom: 30, left: 50};
+    var width = 1000 - margin.left - margin.right;
+    var height = 500 - margin.top - margin.bottom;
+    var x = d3.scale.linear().range([0, width]);
+    var y = d3.scale.ordinal().rangeRoundBands([0, height], .1);
+
+    //Create axis
+    var xAxis = d3.svg.axis().scale(x).orient('bottom').tickSize(-height);
+    var yAxis = d3.svg.axis().scale(y).orient('left').tickSize(0);
+
+    var svg = d3.select(element[0]).append('svg')
+        .attr('width', width)
+        .attr('height', height)
+      .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + margin.right + ')'); 
+
+      // Parse numbers, and sort by value.
+      data.forEach(function(d) { d.value = +d.value; });
+      data.sort(function(a, b) { return b.value - a.value; });
+
+      // Set the scale domain.
+      x.domain([0, d3.max(data, function(d) { return d.value; })]);
+      y.domain(data.map(function(d) { return d.name; }));
+
+      var bar = svg.selectAll("g.bar")
+          .data(data)
+        .enter().append("g")
+          .attr("class", "bar")
+          .attr("transform", function(d) { return "translate(0," + y(d.name) + ")"; });
+
+      bar.append("rect")
+          .attr("width", function(d) { return x(d.value); })
+          .attr("height", y.rangeBand());
+
+      bar.append("text")
+          .attr("class", "value")
+          .attr("x", function(d) { return x(d.value); })
+          .attr("y", y.rangeBand() / 2)
+          .attr("dx", -3)
+          .attr("dy", ".35em")
+          .attr("text-anchor", "end")
+          .text(function(d) { return format(d.value); });
+
+      svg.append("g")
+          .attr("class", "x axis")
+          .call(xAxis);
+
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis);
+ 
   }
   return {
     link: link,

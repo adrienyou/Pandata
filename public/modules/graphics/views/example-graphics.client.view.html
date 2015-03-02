@@ -137,15 +137,15 @@
 				</div>
 			</div>
 		</div>
-		<!-- Something else chart -->
-		<div ng-hide="isSomethingChart() == true">
+		<!-- Bar Chart -->
+		<div ng-hide="isBarChart() == true">
 			<div class="col-md-6">
 				<div class="panel panel-primary">
 					<div class="panel-heading">
-						<b class="headingB">Something Chart</b>
+						<b class="headingB">Bar Chart</b>
 					</div>
 					<div class="panel-body">
-						<something-chart ></something-chart>
+						<bar-chart data="model.tweets" ></bar-chart>
 					</div>	
 				</div>
 			</div>
