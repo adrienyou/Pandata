@@ -12,11 +12,11 @@ var model = {
               {_id : 'absurd', count : 8}, {_id : 'confusing', count : 6}, {_id : 'delirious', count : 3}, {_id : 'foul', count : 3}
               ],
               positive_dictio : [
-              {_id : 'accomplished', count : 12}, {_id : 'enhancement', count : 8}, {_id : 'lucid', count : 4}, {_id : 'simplest', count : 4}
+              {_id : 'accomplished', count : 10}, {_id : 'enhancement', count : 8}, {_id : 'lucid', count : 4}, {_id : 'simplest', count : 4}
               ]
             },       
   graphs: [{ graphName: 'Pie Chart', show: true, id: 0 }, 
-      { graphName: 'Bubble Chart', show: true, id: 1 },
+      { graphName: 'Words Cloud', show: true, id: 1 },
       { graphName: 'Time Line Chart', show: true, id: 2 },
       { graphName: 'Buzz Chart', show: true, id: 3 },
       { graphName: 'Bar Chart', show: true, id: 4 }],
@@ -78,8 +78,8 @@ angular.module('graphics')
     return value;
   };
 
-  //Function to know if the checkbox Bubble Chart is checked or not
-  $scope.isBubbleChart = function() {
+  //Function to know if the checkbox Words Cloud is checked or not
+  $scope.isWordsCloud = function() {
     var value = false;
     angular.forEach($scope.model.graphs, function(graph){
       if(graph.id === 1 && !graph.show) { value = true; }
@@ -198,21 +198,63 @@ angular.module('graphics')
   };
 })
 
-//Directive for Bubble Chart
-.directive('bubbleChart', function(){ 
+//Directive for Words Cloud
+.directive('wordsCloud', function(){ 
   function link(scope, element, attr){
     //Getting data
     var data = scope.data;
-    //Default settings
-    var color = d3.scale.category10();
-    var width = 300;
-    var height = 300;
-    var min = Math.min(width, height);
-    
-    //Graphic init
-    var svg = d3.select(element[0]).append('svg')
-      .attr({width: width, height: height});    
+    var negative_dictio = scope.data.negative_dictio;
+    var positive_dictio = scope.data.positive_dictio;
 
+    //Default settings 
+    var color = ['#1f77b4', '#ff7f0e'];
+    var width = 500;
+    var height = 330;
+    var min = Math.min(width, height);
+
+    //Create the words array we're going to use.
+    var words = [];
+    for(var i=0; i < negative_dictio.length; i++)
+    {
+      var object = {_id : negative_dictio[i]._id, count: negative_dictio[i].count, type: 0};
+      words.push(object);
+    }
+    for(var i=0; i < positive_dictio.length; i++)
+    {
+      var object = {_id : positive_dictio[i]._id, count: positive_dictio[i].count, type: 1};
+      words.push(object);
+    }
+    
+    //The cloud
+    var cloud =  d3.layout.cloud().size([width, height])
+        .words(words)
+        .padding(5)
+        .rotate(function() { return ~~(Math.random() * 2) * 90; })
+        .font('Impact')
+        .fontSize(function(d) { return d.count; })
+        .on('end', draw)
+        .start();
+
+    //Draw functions applied on every word
+    function draw(words) {
+      d3.select(element[0]).append('svg')
+          .attr({width: width, height: height})
+        .append('g')
+          .attr('transform', 'translate(250,150)')
+        .selectAll('text')
+          .data(words)
+        .enter().append('text')
+          .style('font-size', function(d) { return (d.count * 4) + 'px'; })
+          .style('font-family', 'Impact')
+          .style('fill', function(d, i) { return color[d.type]; })
+          .attr('text-anchor', 'middle')
+          .attr('transform', function(d) {
+            return 'translate(' + [d.x, d.y * 1.8] + ')' /*"rotate(" + d.rotate + ")"*/;
+          })
+        .text(function(d) { return d._id; })
+        .append('svg:title')
+          .text(function(d) { return   d._id + ': ' + d.count; });  
+    };   
   }
   return {
     link: link,
@@ -462,64 +504,78 @@ angular.module('graphics')
     var data = scope.data;
     
     //Default settings
-    var margin = {top: 20, right: 20, bottom: 30, left: 50};
-    var width = 1000 - margin.left - margin.right;
-    var height = 500 - margin.top - margin.bottom;
-    var x = d3.scale.linear().range([0, width]);
-    var y = d3.scale.ordinal().rangeRoundBands([0, height], .1);
+    var width = 500;
+    var height = 300;
+    var color = ['#1f77b4', '#ff7f0e', '#2ca02c']
 
-    //Create axis
-    var xAxis = d3.svg.axis().scale(x).orient('bottom').tickSize(-height);
-    var yAxis = d3.svg.axis().scale(y).orient('left').tickSize(0);
+    //Creating nodes
+    var nodes = d3.range(75).map(function() { return {radius: Math.random() * 12 + 4}; });
+    var root = nodes[0];
+    root.radius = 0;
+    root.fixed = true;
 
+    var force = d3.layout.force()
+      .gravity(0.05)
+      .charge(function(d, i) { return i ? 0 : -800; })
+      .nodes(nodes)
+      .size([width, height]);
+
+    force.start();
+
+    //Creating svg
     var svg = d3.select(element[0]).append('svg')
-        .attr('width', width)
-        .attr('height', height)
-      .append('g')
-        .attr('transform', 'translate(' + margin.left + ',' + margin.right + ')'); 
+      .attr('width', width)
+      .attr('height', height);
 
-    // Parse numbers, and sort by value.
-    data.forEach(function(d) { d.value = +d.value; });
-    data.sort(function(a, b) { return b.value - a.value; });
+    svg.selectAll('circle')
+      .data(nodes.slice(1))
+      .enter().append('circle')
+      .attr('r', function(d) { return d.radius; })
+      .style('fill', function(d, i) { return color[i % 3]; });
 
-    //Variables for looping over the data
-    var timelinePointer = 0;
-    var datalength = data.length;
+    force.on('tick', function(e) {
+      var q = d3.geom.quadtree(nodes),
+        i = 0,
+        n = nodes.length;
 
-    //New objects needed to make the distinction between emotions
-    var timelineData = [];
-    var timelineObject = Object.create({place : '', count: 0});
+      while (++i < n) q.visit(collide(nodes[i]));
 
-    // Set the scale domain.
-    x.domain([0, d3.max(data, function(d) { return d.value; })]);
-    y.domain(data.map(function(d) { return d.name; }));
+      svg.selectAll('circle')
+        .attr('cx', function(d) { return d.x; })
+        .attr('cy', function(d) { return d.y; });
+    });
 
-    var bar = svg.selectAll("g.bar")
-        .data(data)
-      .enter().append("g")
-        .attr("class", "bar")
-        .attr("transform", function(d) { return "translate(0," + y(d.name) + ")"; });
+    svg.on('mousemove', function() {
+      var p1 = d3.mouse(this);
+      root.px = p1[0];
+      root.py = p1[1];
+      force.resume();
+    });
 
-    bar.append("rect")
-        .attr("width", function(d) { return x(d.value); })
-        .attr("height", y.rangeBand());
-
-    bar.append("text")
-        .attr("class", "value")
-        .attr("x", function(d) { return x(d.value); })
-        .attr("y", y.rangeBand() / 2)
-        .attr("dx", -3)
-        .attr("dy", ".35em")
-        .attr("text-anchor", "end")
-        .text(function(d) { return format(d.value); });
-
-      svg.append("g")
-          .attr("class", "x axis")
-          .call(xAxis);
-
-      svg.append("g")
-          .attr("class", "y axis")
-          .call(yAxis);
+    //Function managing collision
+    function collide(node) {
+      var r = node.radius + 5,
+        nx1 = node.x - r,
+        nx2 = node.x + r,
+        ny1 = node.y - r,
+        ny2 = node.y + r;
+      return function(quad, x1, y1, x2, y2) {
+      if (quad.point && (quad.point !== node)) {
+        var x = node.x - quad.point.x,
+          y = node.y - quad.point.y,
+          l = Math.sqrt(x * x + y * y),
+          r = node.radius + quad.point.radius;
+        if (l < r) {
+        l = (l - r) / l * .5;
+        node.x -= x *= l;
+        node.y -= y *= l;
+        quad.point.x += x;
+        quad.point.y += y;
+        }
+      }
+      return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+      };
+    }
  
   }
   return {
