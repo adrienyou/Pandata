@@ -8,7 +8,7 @@
 			</div>
 		<div class="panel-body">
 			<div class="list-group">
-				<a data-ng-repeat="article in articles" data-ng-href="#!/articles/{{article._id}}" class="list-group-item">
+				<a data-ng-repeat="article in articles" data-ng-href="#!/articles/{{article._id}}" class="list-group-item" data-ng-show="authentication.user._id == article.user._id">
 					<small class="list-group-item-text" style="float:right">
 						Posted on
 						<span data-ng-bind="article.created | date:'mediumDate'"></span>
