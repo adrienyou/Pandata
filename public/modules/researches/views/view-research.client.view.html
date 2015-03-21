@@ -1,6 +1,6 @@
 <section data-ng-controller="ResearchesController" data-ng-init="findOne()">
 	<div class="well">
-		<h2 class="text-center" data-ng-bind="research.title"></h2>
+		<h2 class="text-center">{{research.title}} + {{test}}</h2>
 	</div>
 
 	<!-- First row, for research description and charts selection -->
@@ -66,6 +66,19 @@
 							<pie data="research"></pie>
 							<p id="pielegend"></p>
 						</div>
+					</div>	
+				</div>
+			</div>
+		</div>
+		<!-- Words Cloud -->
+		<div ng-hide="isWordsCloud() == true">
+			<div class="col-md-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<b class="headingB">Words Cloud</b>
+					</div>
+					<div class="panel-body">
+						<words-cloud data="research"></words-cloud>
 					</div>	
 				</div>
 			</div>

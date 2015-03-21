@@ -1,7 +1,7 @@
 'use strict';
 
 var model = { 
-  research: { user : 'Adrien You',
+  research: { user : 'John Doe',
               title : 'Research about CentraleSupelec',
               description : 'Research about the schools Ecole Centrale Paris and Supelec, that are now creating CentraleSupelec',
               duration : '4',
