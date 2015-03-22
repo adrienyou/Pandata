@@ -39,7 +39,7 @@ You can also use Git to directly clone the Pandata repository:
 ```
 $ git clone https://github.com/AYouEcp/Pandata Pandata
 ```
-This will clone the latest version of the Pandata repository to a **meanjs** folder.
+This will clone the latest version of the Pandata repository to a **Pandata** folder.
 
 ### Downloading The Repository Zip File
 Another way to use the Pandata boilerplate is to download a zip copy from the [master branch on GitHub](https://github.com/AYouEcp/Pandata/archive/master.zip). You can also do this using `wget` command:
