@@ -1,6 +1,6 @@
 <section data-ng-controller="ResearchesController" data-ng-init="findOne()">
 	<div class="well">
-		<h2 class="text-center">{{research.title}} + {{test}}</h2>
+		<h2 class="text-center">{{research.title}}</h2>
 	</div>
 
 	<!-- First row, for research description and charts selection -->
@@ -18,12 +18,34 @@
 						<b class="headingD">Words used for this research:</b> <span ng-repeat="word in research.words">{{word}} </span><br/><br/>
 						<b class="headingD">Social medias tracked: </b> <span>Twitter</span><br/><br/>
 						<b class="headingD">Legend: </b> 
+						&nbsp;
 						<span>
-							<svg width="20" height="10">
-	  							<rect width="20" height="10" style="fill:rgb(31,119,180);stroke-width:1;stroke:rgb(0,0,0)">  
+							<svg width="30" height="12">
+	  							<rect width="30" height="12" style="fill:rgb(31,119,180);">  
 							</svg>
 	 						Positive
- 						</span>
+						</span>
+						&nbsp;
+						<span>
+							<svg width="30" height="12">
+	  							<rect width="30" height="12" style="fill:rgb(255,127,14);">  
+							</svg>
+	 						Negative
+						</span>
+						&nbsp;
+						<span>
+							<svg width="30" height="12">
+	  							<rect width="30" height="12" style="fill:rgb(44,160,44);">  
+							</svg>
+	 						Neutral
+						</span>
+						&nbsp;
+						<span>
+							<svg width="30" height="12">
+	  							<rect width="30" height="12" style="fill:rgb(0,0,0);">  
+							</svg>
+	 						Total
+						</span>
 					</div>	
 				</div>
 			</div>			
@@ -78,13 +100,55 @@
 						<b class="headingB">Words Cloud</b>
 					</div>
 					<div class="panel-body">
-						<words-cloud data="research"></words-cloud>
+						<words data="research"></words>
 					</div>	
 				</div>
 			</div>
 		</div>
-
 	</div>
 	
+	<!-- Third row, for time line chart -->
+	<div ng-hide="isTimeLine() == true">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<b class="headingB">Time Line</b>
+			</div>
+			<div class="panel-body">
+				<time data="research"></time>
+			</div>	
+		</div>
+	</div>
+
+	<!-- Fourth row, for buzz chart and something else chart -->
+	<div class="row">
+		<!-- Pie Chart -->
+		<div ng-hide="isBuzzChart() == true">
+			<div class="col-md-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<b class="headingB">Buzz Chart</b>
+					</div>
+					<div class="panel-body">
+						<div class="text-center">
+							<buzz data="research"></buzz>
+						</div>
+					</div>	
+				</div>
+			</div>
+		</div>
+		<!-- Something Chart -->
+		<div ng-hide="isSomethingChart() == true">
+			<div class="col-md-6">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<b class="headingB">Something Chart</b>
+					</div>
+					<div class="panel-body">
+						<something></something>
+					</div>	
+				</div>
+			</div>
+		</div>
+	</div>
 	
 </section>

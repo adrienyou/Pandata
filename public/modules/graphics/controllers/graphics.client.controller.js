@@ -53,7 +53,7 @@ var model = {
             {date: '20150203', emotion: 'neu', retweet: '96', text: '@CentraleSupelec What about foreign students in 2018? Can we still come?'},
             {date: '20150203', emotion: 'neu', retweet: '8', text: ''},
             {date: '20150203', emotion: 'neu', retweet: '88', text: ''},
-            {date: '20150203', emotion: 'pos', retweet: '94', text: 'Hervé Biausser is now director of CentraleSupelec'},
+            {date: '20150203', emotion: 'pos', retweet: '96', text: 'Hervé Biausser is now director of CentraleSupelec'},
             {date: '20150204', emotion: 'pos', retweet: '12', text: ''},
             {date: '20150204', emotion: 'pos', retweet: '0', text: ''},
             {date: '20150204', emotion: 'neg', retweet: '12', text: ''},
@@ -146,7 +146,7 @@ angular.module('graphics')
     var legendTop = d3.select('#pielegend').append('text')
       .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')')
       .attr('dy', '.35em')
-      .attr('font-weight', 'bold')
+      .style('font-weight', 'bold')
       .style('text-anchor', 'middle')
       .text('Emotion: ')
       .attr('y', -10);
@@ -173,7 +173,8 @@ angular.module('graphics')
                 .attr('d', arcOver);
 
             legendTop.text(d3.select(this).datum().data.label + ': ');
-            legendBot.text(d3.select(this).datum().data.value.toFixed(1) + '%');
+            legendBot.text(d3.select(this).datum().data.value.toFixed(0) + ' tweets ' +
+                '( ' + d3.select(this).datum().data.value.toFixed(1) + '% )' );
         })
         .on('mouseout', function(d) {
             d3.select(this).select('path').transition()
@@ -471,7 +472,7 @@ angular.module('graphics')
 
     //Creating the table tags
     var strRow = '<table class="table table-striped table-bordered table-condensed"><thead><td>Text</td><td>Emotion</td>' 
-      + '<td>Retweet Count</td></tr></thead><tbody>';
+      + '<td>Followers Count</td></tr></thead><tbody>';
 
     //Fill the tbody
     for(var i=0; i <5; i++)

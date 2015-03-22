@@ -91,3 +91,17 @@ time-line .axis path, time-line .axis line
   stroke-width: 2px;
   shape-rendering: crispEdges;
 }
+
+
+time .line-black { stroke: black; stroke-width: 3px; fill: none;}
+time .line-blue { stroke: rgb(31, 119, 180); stroke-width: 3px; fill: none;}
+time .line-red { stroke: rgb(255, 127, 14); stroke-width: 3px; fill: none;}
+time .line-green { stroke: rgb(44, 160, 44); stroke-width: 3px; fill: none;}
+
+time .axis path, time-line .axis line 
+{
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+  shape-rendering: crispEdges;
+}
