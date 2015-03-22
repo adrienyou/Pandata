@@ -1,7 +1,7 @@
 'use strict';
 
  var  graphs = [{ graphName: 'Pie Chart', show: true, id: 0 }, 
-      { graphName: 'Bubble Chart', show: true, id: 1 },
+      { graphName: 'Words Cloud Chart', show: true, id: 1 },
       { graphName: 'Time Line Chart', show: true, id: 2 },
       { graphName: 'Buzz Chart', show: true, id: 3 },
       { graphName: 'Something Chart', show: true, id: 4 }];
@@ -73,7 +73,7 @@ angular.module('researches')
 	  	};
 
 	  	//Function to know if the checkbox Bubble Chart is checked or not
-	  	$scope.isBubbleChart = function() {
+	  	$scope.isWordsCloud = function() {
 	    	var value = false;
 	    	angular.forEach($scope.graphs, function(graph){
 	      		if(graph.id === 1 && !graph.show) { value = true; }
@@ -198,6 +198,74 @@ angular.module('researches')
 
 	});	
 
+  }
+  return {
+    link: link,
+    restrict: 'E',
+    scope: { data: '=' }
+  };
+})
+
+//Directive for Words Cloud
+.directive('words', function(){ 
+  function link(scope, element, attr){
+    //Getting data
+    var resourceData = scope.data;
+
+    resourceData.$promise.then(function(data){
+	    var negative_dictio = data.negative_dictio;
+	    var positive_dictio = data.positive_dictio;
+
+	    //Default settings 
+	    var color = ['#ff7f0e', '#1f77b4'];
+	    var width = 500;
+	    var height = 330;
+	    var min = Math.min(width, height);
+
+	    //Create the words array we're going to use.
+	    var words = [];
+	    for(var i=0; i < negative_dictio.length; i++)
+	    {
+	      var object = {_id : negative_dictio[i]._id, count: negative_dictio[i].count, type: 0};
+	      words.push(object);
+	    }
+	    for(var i=0; i < positive_dictio.length; i++)
+	    {
+	      var object = {_id : positive_dictio[i]._id, count: positive_dictio[i].count, type: 1};
+	      words.push(object);
+	    }
+	    
+	    //The cloud
+	    var cloud =  d3.layout.cloud().size([width, height])
+	        .words(words)
+	        .padding(5)
+	        .rotate(function() { return ~~(Math.random() * 2) * 90; })
+	        .font('Impact')
+	        .fontSize(function(d) { return d.count; })
+	        .on('end', draw)
+	        .start();
+
+	    //Draw functions applied on every word
+	    function draw(words) {
+	      d3.select(element[0]).append('svg')
+	          .attr({width: width, height: height})
+	        .append('g')
+	          .attr('transform', 'translate(275,200)')
+	        .selectAll('text')
+	          .data(words)
+	        .enter().append('text')
+	          .style('font-size', function(d) { return (Math.log(Math.max(d.count, 1)) * 12) + 'px'; })
+	          .style('font-family', 'Impact')
+	          .style('fill', function(d, i) { return color[d.type]; })
+	          .attr('text-anchor', 'middle')
+	          .attr('transform', function(d) {
+	            return 'translate(' + [d.x * 1.8, d.y * 2] + ')' /*"rotate(" + d.rotate + ")"*/;
+	          })
+	        .text(function(d) { return d._id; })
+	        .append('svg:title')
+	          .text(function(d) { return   d._id + ': ' + d.count; });  
+	    };   
+	});
   }
   return {
     link: link,

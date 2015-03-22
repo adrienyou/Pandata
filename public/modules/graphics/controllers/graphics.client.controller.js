@@ -16,7 +16,7 @@ var model = {
               ]
             },       
   graphs: [{ graphName: 'Pie Chart', show: true, id: 0 }, 
-      { graphName: 'Words Cloud', show: true, id: 1 },
+      { graphName: 'Words Cloud Chart', show: true, id: 1 },
       { graphName: 'Time Line Chart', show: true, id: 2 },
       { graphName: 'Buzz Chart', show: true, id: 3 },
       { graphName: 'Bar Chart', show: true, id: 4 }],
